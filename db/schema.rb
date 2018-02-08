@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180208190713) do
+ActiveRecord::Schema.define(version: 20180208194146) do
 
   create_table "moderators", force: :cascade do |t|
     t.string   "fullname"
@@ -20,6 +20,17 @@ ActiveRecord::Schema.define(version: 20180208190713) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
   end
+
+  create_table "posts", force: :cascade do |t|
+    t.string   "title"
+    t.text     "content"
+    t.boolean  "publish"
+    t.integer  "moderator_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "posts", ["moderator_id"], name: "index_posts_on_moderator_id"
 
   create_table "settings", force: :cascade do |t|
     t.string   "site_name"
