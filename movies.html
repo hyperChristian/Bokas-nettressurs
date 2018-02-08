@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <meta charset="utf-8">
+  <title>Sanity MovieDB frontend demo</title>
+  <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css">
+  <style>
+  .movies {max-width: 800px; margin: 0 auto;}
+  .poster {width: 80px; height: 120px;}
+  .error {background: red; color: #fff; position: absolute; top: 0; bottom: 0; margin: 0; width: 100%;}
+  </style>
+</html>
+<body>
+
+<table class="pure-table pure-table-bordered movies">
+  <thead>
+    <tr>
+      <th>Poster</th>
+      <th>Name</th>
+      <th>Year</th>
+      <th>Director</th>
+    </tr>
+  </thead>
+
+  <tbody id="movies">
+    <tr>
+      <td colspan="4">Loading...</td>
+    </tr>
+  </tbody>
+</table>
+
+<script src="https://unpkg.com/@sanity/client@latest?main=umd"></script>
+<script>
+// If you drop the UMD bundle into a page, we attach to `window` as `SanityClient`.
+// In node, or when using a bundler, you'd use `require('@sanity/client')`
+var client = window.SanityClient({
+  // Find your project ID and dataset in `sanity.json` in your studio project
+  projectId: 'zp7mbokg',
+  dataset: 'production'
+})
+
+// Fetch 50 documents of type `movie`, and select only the fields we need
+var query = `
+  *[_type == "movie"]{
+    _id,
+    title,
+    releaseDate,
+    "director": crewMembers[job == "Director"][0].person->name,
+    "poster": poster.asset->url
+  }[0...50]`
+
+client
+  .fetch(query)
+  .then(renderMovies)
+  .catch(renderError)
+
+// What follows isn't related to Sanity - just no-framework rendering logic
+// Obviously, use whatever framework makes you happy!
+var container = document.querySelector('#movies')
+
+function renderMovies(movies) {
+  while (container.firstChild) {
+    container.removeChild(container.firstChild)
+  }
+
+  movies.map(function(movie) {
+    container.appendChild(createMovieRow(movie))
+  })
+}
+
+function createPoster(poster) {
+  var img = createElement('img')
+  img.className = 'poster'
+  img.src = poster + '?h=240'
+  return img
+}
+
+function createMovieRow(movie) {
+  return createElement('tr', [
+    createElement('td', [createPoster(movie.posterUrl)]),
+    createElement('td', [text(movie.title)]),
+    createElement('td', [text(movie.releaseDate.utc.substr(0, 4))]),
+    createElement('td', [text(movie.director || 'Unknown')])
+  ])
+}
+
+function createElement(tag, childNodes) {
+  var el = document.createElement(tag)
+  var children = childNodes || []
+  children.forEach(function (child) {
+    el.appendChild(child)
+  })
+  return el
+}
+
+function renderError(err) {
+  const errorBox = createElement('pre', [text(err.message)])
+  errorBox.className = 'error'
+
+  document.body.replaceChild(
+    errorBox,
+    container.parentNode
+  )
+}
+
+function text(str) {
+  return document.createTextNode(str)
+}
+</script>
+
+</body>
+</html>
