@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180208184128) do
+ActiveRecord::Schema.define(version: 20180208190713) do
 
   create_table "moderators", force: :cascade do |t|
     t.string   "fullname"
@@ -19,6 +19,15 @@ ActiveRecord::Schema.define(version: 20180208184128) do
     t.string   "password_digest"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.string   "site_name"
+    t.integer  "post_per_page"
+    t.boolean  "under_maintenance"
+    t.boolean  "tag_visibility"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
 end
