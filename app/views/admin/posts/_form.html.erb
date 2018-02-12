@@ -1,0 +1,24 @@
+<div>
+	<%= render 'validation_errors', object: @post %>
+	<%= form_for [:admin, @post ], html: { multipart: true } do |f| %>
+		<div class="clearfix">
+			<%= f.submit :class => "btn btn-primary pull-right" %>
+		</div>
+		<div class="checkbox">
+			<%= f.label :publish %>
+			<%= f.check_box :publish, :class => "js-switch"  %>
+		</div>
+		<div class="form-group">
+			<%= f.label :title, :class => "sr-only" %><br>
+			<%= f.text_field :title, :class => 'form-control', :placeholder => "Title" %>
+		</div>					
+		<div class="form-group">
+			<%= f.label :content, :class => "sr-only"%><br>
+			<%= f.text_area :content %>
+		</div>
+		<div class="form-group">
+			<%= f.select :tag_ids, Tag.all.collect {|t| [t.name, t.id]}, {prompt: ''}, multiple: :true, :class => "form-control chosen-select" %>
+		</div>	
+	<% end %>
+
+</div>
