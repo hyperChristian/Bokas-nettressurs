@@ -11,7 +11,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180208215344) do
+ActiveRecord::Schema.define(version: 20180212191813) do
+
+  create_table "galleries", force: :cascade do |t|
+    t.string   "title"
+    t.string   "description"
+    t.integer  "post_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "galleries", ["post_id"], name: "index_galleries_on_post_id"
+
+  create_table "images", force: :cascade do |t|
+    t.string   "image"
+    t.text     "description"
+    t.integer  "gallery_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "images", ["gallery_id"], name: "index_images_on_gallery_id"
+
+  create_table "links", force: :cascade do |t|
+    t.string   "title"
+    t.string   "description"
+    t.string   "url"
+    t.integer  "post_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "links", ["post_id"], name: "index_links_on_post_id"
 
   create_table "moderators", force: :cascade do |t|
     t.string   "fullname"

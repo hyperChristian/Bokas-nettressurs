@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     resources :settings, only: [:new, :create, :edit, :update]
     resources :posts
     resources :tags, except: [:index]
+    resources :galleries
+    resources :links
     resources :sessions, only: [:index, :create, :destroy]
     resources :moderators, only: [:index, :edit, :update]
 
